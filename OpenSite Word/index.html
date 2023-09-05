@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+    <title>OpenSite Word</title>
+<head>
+<style>
+ul {
+    font-family: Comic Sans MS ;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+li {
+  float: left;
+  border-right:1px solid #bbb;
+}
+
+li:last-child {
+  border-right: none;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+li a:hover:not(.active) {
+  background-color: #111;
+}
+
+.active {
+  background-color: #04AA6D;
+}
+</style>
+</head>
+<body>
+
+<ul>
+  <li><a class="active" href="index.html">Home</a></li>
+  <li><a href="API.html">API</a></li>
+</ul>
+<h1 style="font-family: 'Comic Sans MS'; text-align: center;">OpenSite Word</h1>
+<form onsubmit="searchWord(event)">
+    <input type="text" id="searchBar" placeholder="Search for a word" style="font-family: 'Comic Sans MS'; width: 100%; padding: 12px 20px; margin: 8px 0; box-sizing: border-box; border: 2px solid #ccc; border-radius: 4px;">
+    <button type="submit" style="width: 100%; background-color: #4CAF50; color: white; padding: 14px 20px; margin: 8px 0; border: none; border-radius: 4px; cursor: pointer;">Search</button>
+  </form>
+  
+  <div id="results" style="font-family: 'Comic Sans MS';"></div>
+  
+  <script>
+    function searchWord(event) {
+      event.preventDefault();
+      const word = document.getElementById('searchBar').value;
+      const url = `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`;
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          // Handle the API response here
+          let resultsHTML = '';
+          if (data && data.length > 0) {
+            resultsHTML += `<h2>${word}</h2>`;
+            data.forEach(entry => {
+              if (entry.meanings && entry.meanings.length > 0) {
+                entry.meanings.forEach(meaning => {
+                  if (meaning.definitions && meaning.definitions.length > 0) {
+                    meaning.definitions.forEach(definition => {
+                      resultsHTML += `<p>${definition.definition}</p>`;
+                    });
+                  }
+                });
+              }
+            });
+          } else {
+            resultsHTML = `<p>No results found for "${word}".</p>`;
+          }
+          document.getElementById('results').innerHTML = resultsHTML;
+        });
+    }
+  </script>
+  
+
+</body>
+</html>
+
+
